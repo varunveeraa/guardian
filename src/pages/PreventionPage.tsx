@@ -3,7 +3,36 @@ import { Download, QrCode, XCircle, Lock, Car as IdCard, Link, ShieldPlus, Check
 import { useAccessibility } from '../contexts/AccessibilityContext';
 
 export const PreventionPage: React.FC = () => {
-  const { speakText } = useAccessibility();
+  const { speakText, highContrast } = useAccessibility();
+
+  const handleInstallExtension = () => {
+    speakText('Opening installation instructions');
+
+    // Create installation instructions modal/alert
+    const instructions = `
+To install the Safety Shield extension:
+
+FOR CHROME:
+1. Build for Chrome: npm run build:extension:chrome
+2. Open Chrome and go to chrome://extensions/
+3. Turn on "Developer mode" (top right toggle)
+4. Click "Load unpacked" and select the 'dist' folder
+
+FOR FIREFOX:
+1. Build for Firefox: npm run build:extension:firefox
+2. Open Firefox and go to about:debugging
+3. Click "This Firefox"
+4. Click "Load Temporary Add-on"
+5. Select the manifest.json file from the 'dist' folder
+
+The Safety Shield icon will appear in your browser toolbar and protect you on websites and help analyze Gmail emails!
+    `.trim();
+
+    alert(instructions);
+
+    // Also log to console for developers
+    console.log('Extension installation instructions:', instructions);
+  };
 
   return (
     <div className="max-w-4xl mx-auto px-8 py-12 space-y-16">
@@ -27,12 +56,16 @@ export const PreventionPage: React.FC = () => {
         </h2>
         
         <div className="flex flex-col md:flex-row items-center gap-8">
-          <button 
-            onClick={() => speakText('Install the Browser Guardian button')}
-            className="flex-1 bg-blue-500 hover:bg-blue-600 text-white px-12 py-6 rounded-lg text-2xl font-bold shadow-lg hover:shadow-xl transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-blue-300 flex items-center justify-center gap-4"
+          <button
+            onClick={handleInstallExtension}
+            className={`flex-1 px-12 py-6 rounded-lg text-2xl font-bold shadow-lg hover:shadow-xl transition-all duration-200 focus:outline-none focus:ring-4 flex items-center justify-center gap-4 ${
+              highContrast
+                ? 'bg-white text-black hover:bg-gray-200 focus:ring-white border-2 border-white'
+                : 'bg-blue-500 hover:bg-blue-600 text-white focus:ring-blue-300'
+            }`}
           >
             <Download className="h-8 w-8" />
-            Install the Browser Guardian
+            Install Guardian for Your Browser
           </button>
           
           <div className="flex-1 text-center">

@@ -8,9 +8,7 @@ export const HomePage: React.FC = () => {
   const { speakText } = useAccessibility();
 
   const handleCardClick = (path: string, title: string) => {
-    if (textToSpeech) {
-      speakText(`Navigating to ${title}`);
-    }
+    speakText(`Navigating to ${title}`);
     navigate(path);
   };
 

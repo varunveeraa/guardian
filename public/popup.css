@@ -1,0 +1,208 @@
+/* Elderly-friendly styling with large fonts and clear colors */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    color: #333;
+    background: #f8f9fa;
+    width: 400px;
+    min-height: 500px;
+}
+
+#popup-container {
+    padding: 20px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #e9ecef;
+}
+
+.icon-status {
+    font-size: 32px;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #e8f5e8;
+}
+
+h1 {
+    font-size: 24px;
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.view {
+    display: block;
+}
+
+.view.hidden {
+    display: none;
+}
+
+.status-message {
+    background: #d4edda;
+    border: 2px solid #c3e6cb;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.status-message p {
+    font-size: 18px;
+    font-weight: 500;
+    color: #155724;
+    margin: 0;
+}
+
+.primary-button {
+    width: 100%;
+    padding: 15px 20px;
+    font-size: 18px;
+    font-weight: 600;
+    color: white;
+    background: #dc3545;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    margin-bottom: 15px;
+}
+
+.primary-button:hover {
+    background: #c82333;
+}
+
+.primary-button:active {
+    transform: translateY(1px);
+}
+
+.info-section {
+    background: #f8f9fa;
+    border-radius: 6px;
+    padding: 12px;
+    margin-bottom: 15px;
+}
+
+.small-text {
+    font-size: 14px;
+    color: #6c757d;
+    text-align: center;
+    line-height: 1.4;
+}
+
+/* Gmail view styles */
+.email-header {
+    margin-bottom: 15px;
+}
+
+.email-header h2 {
+    font-size: 20px;
+    color: #2c3e50;
+    margin-bottom: 10px;
+}
+
+.safety-indicator {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: #d4edda;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #155724;
+}
+
+.safety-icon {
+    font-size: 16px;
+}
+
+.email-content {
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    padding: 15px;
+    margin-bottom: 20px;
+    max-height: 400px;
+    overflow-y: auto;
+    font-size: 15px;
+    line-height: 1.5;
+}
+
+.loading {
+    text-align: center;
+    color: #6c757d;
+    font-style: italic;
+}
+
+.email-tips {
+    background: #fff3cd;
+    border: 1px solid #ffeaa7;
+    border-radius: 6px;
+    padding: 15px;
+    margin-bottom: 15px;
+}
+
+.email-tips h3 {
+    font-size: 16px;
+    color: #856404;
+    margin-bottom: 10px;
+}
+
+.email-tips ul {
+    margin-left: 20px;
+}
+
+.email-tips li {
+    font-size: 14px;
+    color: #856404;
+    margin-bottom: 5px;
+}
+
+.footer {
+    text-align: center;
+    padding-top: 15px;
+    border-top: 1px solid #e9ecef;
+}
+
+.version {
+    font-size: 12px;
+    color: #6c757d;
+}
+
+/* Status color variations */
+.status-safe {
+    background: #d4edda;
+    border-color: #c3e6cb;
+    color: #155724;
+}
+
+.status-warning {
+    background: #fff3cd;
+    border-color: #ffeaa7;
+    color: #856404;
+}
+
+.status-danger {
+    background: #f8d7da;
+    border-color: #f5c6cb;
+    color: #721c24;
+}

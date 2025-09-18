@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Safety Shield</title>
+    <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+    <div id="popup-container">
+        <div class="header">
+            <div class="icon-status" id="status-icon">🛡️</div>
+            <h1>Safety Shield</h1>
+        </div>
+        
+        <!-- Normal view for regular websites -->
+        <div id="normal-view" class="view">
+            <div class="status-message" id="status-message">
+                <p>This website appears to be safe and secure!</p>
+            </div>
+            
+            <button id="test-warning-btn" class="primary-button">
+                ⚠️ Test the Warning Screen
+            </button>
+            
+            <div class="info-section">
+                <p class="small-text">Click the button above to see how our warning system protects you from dangerous websites.</p>
+            </div>
+        </div>
+        
+        <!-- Gmail view for when reading emails -->
+        <div id="gmail-view" class="view hidden">
+            <div class="email-header">
+                <h2>📧 Email Content</h2>
+                <div class="safety-indicator" id="email-safety">
+                    <span class="safety-icon">✅</span>
+                    <span>This email looks safe</span>
+                </div>
+            </div>
+            
+            <div class="email-content" id="email-content">
+                <div class="loading">Loading email content...</div>
+            </div>
+            
+            <div class="email-tips">
+                <h3>💡 Safety Tips:</h3>
+                <ul>
+                    <li>Be cautious of urgent requests for money or personal information</li>
+                    <li>Verify sender identity before clicking links</li>
+                    <li>When in doubt, ask a trusted family member</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p class="version">Safety Shield v1.0</p>
+        </div>
+    </div>
+    
+    <script src="popup.js"></script>
+</body>
+</html>

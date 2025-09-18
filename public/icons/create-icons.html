@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create Safety Shield Icons</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .icon-preview { margin: 10px; display: inline-block; }
+        canvas { border: 1px solid #ccc; margin: 5px; }
+    </style>
+</head>
+<body>
+    <h1>Safety Shield Icon Generator</h1>
+    <p>This page generates basic placeholder icons for the Safety Shield extension.</p>
+    
+    <div id="icons"></div>
+    
+    <script>
+        const sizes = [16, 32, 48, 128];
+        const types = [
+            { name: 'icon', color: '#007bff', symbol: '🛡️' },
+            { name: 'icon-safe', color: '#28a745', symbol: '🛡️' },
+            { name: 'icon-warning', color: '#ffc107', symbol: '🛡️' },
+            { name: 'icon-danger', color: '#dc3545', symbol: '🛡️' }
+        ];
+        
+        const iconsDiv = document.getElementById('icons');
+        
+        types.forEach(type => {
+            const typeDiv = document.createElement('div');
+            typeDiv.innerHTML = `<h3>${type.name}</h3>`;
+            
+            sizes.forEach(size => {
+                const canvas = document.createElement('canvas');
+                canvas.width = size;
+                canvas.height = size;
+                
+                const ctx = canvas.getContext('2d');
+                
+                // Fill background
+                ctx.fillStyle = type.color;
+                ctx.fillRect(0, 0, size, size);
+                
+                // Add shield emoji (simplified as text)
+                ctx.fillStyle = 'white';
+                ctx.font = `${size * 0.6}px Arial`;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('🛡', size/2, size/2);
+                
+                const preview = document.createElement('div');
+                preview.className = 'icon-preview';
+                preview.appendChild(canvas);
+                
+                const label = document.createElement('div');
+                label.textContent = `${size}x${size}`;
+                preview.appendChild(label);
+                
+                const downloadLink = document.createElement('a');
+                downloadLink.href = canvas.toDataURL();
+                downloadLink.download = `${type.name}-${size}.png`;
+                downloadLink.textContent = 'Download';
+                preview.appendChild(downloadLink);
+                
+                typeDiv.appendChild(preview);
+            });
+            
+            iconsDiv.appendChild(typeDiv);
+        });
+    </script>
+</body>
+</html>

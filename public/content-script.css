@@ -1,0 +1,38 @@
+/* Safety Shield Content Script Styles */
+
+/* Ensure our overlay appears above everything else */
+#safety-shield-warning-overlay {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    background: rgba(220, 53, 69, 0.95) !important;
+    z-index: 2147483647 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+    padding: 20px !important;
+    box-sizing: border-box !important;
+}
+
+/* Prevent any website styles from interfering */
+#safety-shield-warning-overlay * {
+    box-sizing: border-box !important;
+}
+
+/* Hide scrollbars when overlay is shown */
+body.safety-shield-no-scroll {
+    overflow: hidden !important;
+}
+
+/* Additional utility classes for future use */
+.safety-shield-hidden {
+    display: none !important;
+}
+
+.safety-shield-blur {
+    filter: blur(3px) !important;
+    pointer-events: none !important;
+}
