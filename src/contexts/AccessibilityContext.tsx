@@ -74,13 +74,13 @@ export const AccessibilityProvider: React.FC<{ children: React.ReactNode }> = ({
     const body = document.body;
     
     // Apply font size to root element
-    root.classList.remove('text-base', 'text-lg', 'text-xl', 'text-2xl');
+    root.classList.remove('font-normal', 'font-medium', 'font-large');
     if (fontSize === 'large') {
-      root.classList.add('text-lg');
+      root.classList.add('font-medium');
     } else if (fontSize === 'larger') {
-      root.classList.add('text-xl');
+      root.classList.add('font-large');
     } else {
-      root.classList.add('text-base');
+      root.classList.add('font-normal');
     }
     
     // Apply high contrast
@@ -107,7 +107,7 @@ export const AccessibilityProvider: React.FC<{ children: React.ReactNode }> = ({
       speakText
     }}>
       <div className={`min-h-screen transition-all duration-300 ${
-        fontSize === 'large' ? 'text-lg' : fontSize === 'larger' ? 'text-xl' : 'text-base'
+        fontSize === 'large' ? 'font-medium' : fontSize === 'larger' ? 'font-large' : 'font-normal'
       } ${
         highContrast ? 'bg-black text-white' : 'bg-white text-gray-800'
       }`}>

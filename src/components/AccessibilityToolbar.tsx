@@ -1,5 +1,5 @@
 import React from 'react';
-import { Plus, Minus, Contrast, Volume2 } from 'lucide-react';
+import { ZoomIn, ZoomOut, Contrast, Volume2 } from 'lucide-react';
 import { useAccessibility } from '../contexts/AccessibilityContext';
 
 export const AccessibilityToolbar: React.FC = () => {
@@ -32,7 +32,7 @@ export const AccessibilityToolbar: React.FC = () => {
         title="Increase Font Size"
         aria-label="Increase Font Size"
       >
-        <Plus className="h-6 w-6" />
+        <ZoomIn className="h-6 w-6" />
       </button>
       
       <button
@@ -41,7 +41,7 @@ export const AccessibilityToolbar: React.FC = () => {
         title="Decrease Font Size"
         aria-label="Decrease Font Size"
       >
-        <Minus className="h-6 w-6" />
+        <ZoomOut className="h-6 w-6" />
       </button>
       
       <button
