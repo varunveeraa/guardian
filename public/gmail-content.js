@@ -25,6 +25,18 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         return true;
     }
 
+    if (request.action === 'showEmailSafetyNotification') {
+        console.log('Showing email safety notification:', request);
+        try {
+            showEmailSafetyNotification(request.safetyLevel, request.icon, request.message, request.apiResponse);
+            sendResponse({ success: true });
+        } catch (error) {
+            console.error('Error showing email safety notification:', error);
+            sendResponse({ success: false, error: error.message });
+        }
+        return true;
+    }
+
     sendResponse({ success: false, error: 'Unknown action: ' + request.action });
     return true;
 });
@@ -67,6 +79,7 @@ function extractEmailContent() {
         sender: 'Unknown Sender',
         subject: 'No Subject',
         body: 'No content found',
+        urls: [],
         timestamp: new Date().toISOString()
     };
 
@@ -183,6 +196,9 @@ function extractEmailContent() {
         }
     }
 
+    // Extract URLs from the email
+    emailData.urls = extractUrlsFromEmail();
+
     console.log('Final email data:', emailData);
     return emailData;
 }
@@ -234,6 +250,270 @@ function expandCollapsedContent() {
             }
         }
     }
+}
+
+function extractUrlsFromEmail() {
+    console.log('Extracting URLs from email...');
+    const urls = new Set(); // Use Set to avoid duplicates
+
+    // First, look for actual HTML links in the email content
+    const emailContainer = document.querySelector('.ii.gt') || document.querySelector('[role="main"]');
+    if (emailContainer) {
+        // Find all anchor tags with href attributes
+        const links = emailContainer.querySelectorAll('a[href]');
+        for (const link of links) {
+            const href = link.getAttribute('href');
+            if (href && isValidUrl(href)) {
+                // Clean up Gmail's redirect URLs
+                const cleanUrl = cleanGmailUrl(href);
+                if (cleanUrl) {
+                    urls.add(cleanUrl);
+                }
+            }
+        }
+    }
+
+    // Also extract URLs from the text content using regex
+    const bodySelectors = [
+        '.ii.gt .a3s.aiL',
+        '.a3s.aiL',
+        '[role="listitem"] .a3s',
+        '.ii.gt',
+        '[data-message-id] .a3s'
+    ];
+
+    for (const selector of bodySelectors) {
+        const elements = document.querySelectorAll(selector);
+        for (const element of elements) {
+            if (element && element.textContent) {
+                const textUrls = extractUrlsFromText(element.textContent);
+                textUrls.forEach(url => urls.add(url));
+            }
+        }
+    }
+
+    const urlArray = Array.from(urls);
+    console.log(`Found ${urlArray.length} unique URLs:`, urlArray);
+    return urlArray;
+}
+
+function isValidUrl(string) {
+    try {
+        const url = new URL(string);
+        return url.protocol === 'http:' || url.protocol === 'https:';
+    } catch (_) {
+        return false;
+    }
+}
+
+function cleanGmailUrl(gmailUrl) {
+    // Gmail often wraps URLs in redirects like:
+    // https://www.google.com/url?q=https://example.com&sa=D&source=gmail&ust=...
+    try {
+        const url = new URL(gmailUrl);
+
+        // If it's a Google redirect, extract the actual URL
+        if (url.hostname === 'www.google.com' && url.pathname === '/url' && url.searchParams.has('q')) {
+            const actualUrl = url.searchParams.get('q');
+            if (actualUrl && isValidUrl(actualUrl)) {
+                return actualUrl;
+            }
+        }
+
+        // If it's already a clean URL, return it
+        if (isValidUrl(gmailUrl)) {
+            return gmailUrl;
+        }
+    } catch (e) {
+        console.log('Error cleaning Gmail URL:', e.message);
+    }
+
+    return null;
+}
+
+function extractUrlsFromText(text) {
+    // Regex to find URLs in text
+    const urlRegex = /https?:\/\/[^\s<>"{}|\\^`[\]]+/gi;
+    const matches = text.match(urlRegex) || [];
+
+    return matches.filter(url => {
+        // Additional validation and cleaning
+        try {
+            // Remove trailing punctuation that might be part of sentence
+            const cleanUrl = url.replace(/[.,;:!?]+$/, '');
+            return isValidUrl(cleanUrl) ? cleanUrl : null;
+        } catch (e) {
+            return null;
+        }
+    }).filter(Boolean);
+}
+
+function showEmailSafetyNotification(safetyLevel, icon, message, apiResponse) {
+    console.log('Creating email safety notification:', safetyLevel, message);
+
+    // Remove any existing notification
+    const existingNotification = document.getElementById('email-safety-notification');
+    if (existingNotification) {
+        existingNotification.remove();
+    }
+
+    // Create the notification element
+    const notification = document.createElement('div');
+    notification.id = 'email-safety-notification';
+
+    // Determine colors and styles based on safety level
+    let backgroundColor, borderColor, textColor, shadowColor;
+
+    switch (safetyLevel) {
+        case 'safe':
+            backgroundColor = '#d4edda';
+            borderColor = '#28a745';
+            textColor = '#155724';
+            shadowColor = 'rgba(40, 167, 69, 0.3)';
+            break;
+        case 'caution':
+            backgroundColor = '#fff3cd';
+            borderColor = '#ffc107';
+            textColor = '#856404';
+            shadowColor = 'rgba(255, 193, 7, 0.3)';
+            break;
+        case 'danger':
+            backgroundColor = '#f8d7da';
+            borderColor = '#dc3545';
+            textColor = '#721c24';
+            shadowColor = 'rgba(220, 53, 69, 0.3)';
+            break;
+        default:
+            backgroundColor = '#f8f9fa';
+            borderColor = '#6c757d';
+            textColor = '#495057';
+            shadowColor = 'rgba(108, 117, 125, 0.3)';
+    }
+
+    // Style the notification
+    notification.style.cssText = `
+        position: fixed;
+        top: 50%;
+        right: 20px;
+        transform: translateY(-50%);
+        width: 320px;
+        background: ${backgroundColor};
+        border: 3px solid ${borderColor};
+        border-radius: 12px;
+        padding: 20px;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        font-size: 16px;
+        font-weight: 600;
+        color: ${textColor};
+        box-shadow: 0 8px 32px ${shadowColor}, 0 4px 16px rgba(0, 0, 0, 0.1);
+        z-index: 10000;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        animation: slideInRight 0.5s ease-out;
+    `;
+
+    // Add the content
+    notification.innerHTML = `
+        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+            <span style="font-size: 24px;">${icon}</span>
+            <span style="font-size: 18px; font-weight: 700;">Safety Shield</span>
+        </div>
+        <div style="font-size: 16px; line-height: 1.4; margin-bottom: 12px;">
+            ${message}
+        </div>
+        <div style="font-size: 12px; opacity: 0.8; text-align: center;">
+            Click for details • Auto-close in 10s
+        </div>
+    `;
+
+    // Add CSS animation
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes slideInRight {
+            from {
+                transform: translateY(-50%) translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(-50%) translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOutRight {
+            from {
+                transform: translateY(-50%) translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateY(-50%) translateX(100%);
+                opacity: 0;
+            }
+        }
+    `;
+    document.head.appendChild(style);
+
+    // Add hover effect
+    notification.addEventListener('mouseenter', () => {
+        notification.style.transform = 'translateY(-50%) scale(1.02)';
+        notification.style.boxShadow = `0 12px 40px ${shadowColor}, 0 6px 20px rgba(0, 0, 0, 0.15)`;
+    });
+
+    notification.addEventListener('mouseleave', () => {
+        notification.style.transform = 'translateY(-50%) scale(1)';
+        notification.style.boxShadow = `0 8px 32px ${shadowColor}, 0 4px 16px rgba(0, 0, 0, 0.1)`;
+    });
+
+    // Add click handler for detailed information
+    notification.addEventListener('click', () => {
+        showDetailedEmailSafety(apiResponse);
+    });
+
+    // Add to page
+    document.body.appendChild(notification);
+
+    // Auto-remove after 10 seconds
+    setTimeout(() => {
+        if (notification && notification.parentNode) {
+            notification.style.animation = 'slideOutRight 0.3s ease-in';
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.parentNode.removeChild(notification);
+                }
+            }, 300);
+        }
+    }, 10000);
+
+    console.log('Email safety notification displayed');
+}
+
+function showDetailedEmailSafety(apiResponse) {
+    const riskScore = apiResponse.overall_risk || 0;
+    const senderScore = apiResponse.sender?.score || 0;
+    const contentScore = apiResponse.content?.score || 0;
+
+    let details = `📧 Email Safety Analysis\n\n`;
+    details += `Overall Risk: ${(riskScore * 100).toFixed(1)}%\n`;
+    details += `Sender Risk: ${(senderScore * 100).toFixed(1)}%\n`;
+    details += `Content Risk: ${(contentScore * 100).toFixed(1)}%\n\n`;
+
+    if (apiResponse.official) {
+        details += `✅ Official/Trusted Source: Yes\n\n`;
+    }
+
+    if (apiResponse.reasons && apiResponse.reasons.length > 0) {
+        details += `Risk Factors:\n`;
+        apiResponse.reasons.forEach(reason => {
+            details += `• ${reason}\n`;
+        });
+    }
+
+    details += `\n💡 Safety Thresholds:\n`;
+    details += `• Safe: < 20%\n`;
+    details += `• Caution: 20% - 60%\n`;
+    details += `• High Risk: ≥ 60%`;
+
+    alert(details);
 }
 
 console.log('Gmail Safety Shield content script loaded and ready!');

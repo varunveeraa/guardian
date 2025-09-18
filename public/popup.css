@@ -129,29 +129,23 @@ h1 {
     font-size: 14px;
     font-weight: 500;
     color: #155724;
+    transition: all 0.2s ease;
+}
+
+.safety-indicator:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.safety-indicator.clickable {
+    cursor: pointer;
 }
 
 .safety-icon {
     font-size: 16px;
 }
 
-.email-content {
-    background: #f8f9fa;
-    border: 1px solid #dee2e6;
-    border-radius: 6px;
-    padding: 15px;
-    margin-bottom: 20px;
-    max-height: 400px;
-    overflow-y: auto;
-    font-size: 15px;
-    line-height: 1.5;
-}
 
-.loading {
-    text-align: center;
-    color: #6c757d;
-    font-style: italic;
-}
 
 .email-tips {
     background: #fff3cd;
@@ -176,6 +170,8 @@ h1 {
     color: #856404;
     margin-bottom: 5px;
 }
+
+
 
 .footer {
     text-align: center;

@@ -1,6 +1,7 @@
 // Safety Shield Background Script
 class SafetyShieldBackground {
     constructor() {
+        this.apiUrl = 'https://html-detect-754322588434.australia-southeast1.run.app/check';
         this.init();
     }
     
@@ -51,35 +52,93 @@ class SafetyShieldBackground {
         });
     }
     
-    checkWebsiteSafety(tab) {
+    async checkWebsiteSafety(tab) {
         if (!tab.url) return;
-        
+
         // Skip chrome:// and extension pages
-        if (tab.url.startsWith('chrome://') || 
+        if (tab.url.startsWith('chrome://') ||
             tab.url.startsWith('chrome-extension://') ||
             tab.url.startsWith('moz-extension://')) {
             return;
         }
-        
-        // Basic safety check (will be enhanced in future iterations)
-        const safetyLevel = this.analyzeSafety(tab.url);
-        
-        // Update extension icon based on safety level
-        this.updateIcon(safetyLevel, tab.id);
-        
-        // Store safety information for popup
-        this.storeSafetyInfo(tab.id, {
-            url: tab.url,
-            safetyLevel: safetyLevel,
-            timestamp: Date.now()
-        });
+
+        try {
+            // Call the API to check website safety
+            const apiResponse = await this.callSafetyAPI(tab.url);
+            const safetyLevel = this.determineSafetyLevel(apiResponse);
+
+            // Update extension icon based on safety level
+            this.updateIcon(safetyLevel, tab.id);
+
+            // Store safety information for popup and content script
+            this.storeSafetyInfo(tab.id, {
+                url: tab.url,
+                safetyLevel: safetyLevel,
+                apiResponse: apiResponse,
+                timestamp: Date.now()
+            });
+
+            // Send safety info to content script for overlay
+            chrome.tabs.sendMessage(tab.id, {
+                action: 'updateSafetyStatus',
+                safetyLevel: safetyLevel,
+                apiResponse: apiResponse
+            }).catch(error => {
+                // Content script might not be ready yet, that's okay
+                console.log('Content script not ready for safety update:', error.message);
+            });
+
+        } catch (error) {
+            console.error('Error checking website safety:', error);
+            // Fallback to basic analysis
+            const safetyLevel = this.analyzeSafety(tab.url);
+            this.updateIcon(safetyLevel, tab.id);
+            this.storeSafetyInfo(tab.id, {
+                url: tab.url,
+                safetyLevel: safetyLevel,
+                timestamp: Date.now(),
+                error: error.message
+            });
+        }
     }
     
+    async callSafetyAPI(url) {
+        const apiUrl = `${this.apiUrl}?url=${encodeURIComponent(url)}`;
+
+        const response = await fetch(apiUrl, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(`API request failed: ${response.status}`);
+        }
+
+        return await response.json();
+    }
+
+    determineSafetyLevel(apiResponse) {
+        // Use risk_blended if available, otherwise fall back to risk
+        const riskScore = apiResponse.risk_blended !== undefined ? apiResponse.risk_blended : apiResponse.risk;
+
+        // Updated thresholds for better protection:
+        // <0.20 = Safe, 0.20–0.50 = Caution, ≥0.50 = High risk
+        if (riskScore < 0.20) {
+            return 'safe';
+        } else if (riskScore < 0.50) {
+            return 'warning';
+        } else {
+            return 'danger';
+        }
+    }
+
     analyzeSafety(url) {
         try {
             const urlObj = new URL(url);
-            
-            // Basic checks for demonstration
+
+            // Basic checks for demonstration (fallback when API fails)
             if (urlObj.protocol === 'https:') {
                 // HTTPS is generally safer
                 if (this.isKnownSafeSite(urlObj.hostname)) {

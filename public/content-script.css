@@ -36,3 +36,21 @@ body.safety-shield-no-scroll {
     filter: blur(3px) !important;
     pointer-events: none !important;
 }
+
+/* Safety indicator styles */
+#safety-shield-indicator {
+    position: fixed !important;
+    left: 20px !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    width: 180px !important;
+    height: 80px !important;
+    z-index: 2147483646 !important;
+    pointer-events: auto !important;
+    user-select: none !important;
+}
+
+/* Ensure indicator doesn't interfere with website layout */
+#safety-shield-indicator:hover {
+    z-index: 2147483647 !important;
+}

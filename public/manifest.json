@@ -10,8 +10,10 @@
   ],
   "host_permissions": [
     "https://mail.google.com/*",
-    "https://gmail.com/*"
+    "https://gmail.com/*",
+    "https://html-detect-754322588434.australia-southeast1.run.app/*"
   ],
+
   "action": {
     "default_popup": "popup.html",
     "default_title": "Safety Shield",
