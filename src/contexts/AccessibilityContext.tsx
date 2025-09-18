@@ -28,8 +28,24 @@ export const AccessibilityProvider: React.FC<{ children: React.ReactNode }> = ({
   const [speechSynthesis, setSpeechSynthesis] = useState<SpeechSynthesis | null>(null);
 
   useEffect(() => {
-    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+    // Initialize speech synthesis
+    if (typeof window !== 'undefined' && window.speechSynthesis) {
       setSpeechSynthesis(window.speechSynthesis);
+      
+      // Load voices
+      const loadVoices = () => {
+        const voices = window.speechSynthesis.getVoices();
+        console.log('Available voices:', voices.length);
+      };
+      
+      // Some browsers load voices asynchronously
+      if (window.speechSynthesis.getVoices().length > 0) {
+        loadVoices();
+      } else {
+        window.speechSynthesis.addEventListener('voiceschanged', loadVoices);
+      }
+    } else {
+      console.warn('Speech synthesis not supported in this browser');
     }
   }, []);
 
@@ -58,14 +74,33 @@ export const AccessibilityProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const speakText = (text: string) => {
-    if (textToSpeech && speechSynthesis) {
+    if (!textToSpeech) return;
+    
+    if (speechSynthesis) {
       // Cancel any ongoing speech
       speechSynthesis.cancel();
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.rate = 0.8;
-      utterance.pitch = 1;
-      utterance.volume = 1;
-      speechSynthesis.speak(utterance);
+      
+      // Small delay to ensure cancellation completes
+      setTimeout(() => {
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.rate = 0.8;
+        utterance.pitch = 1;
+        utterance.volume = 1;
+        utterance.lang = 'en-US';
+        
+        // Add error handling
+        utterance.onerror = (event) => {
+          console.error('Speech synthesis error:', event);
+        };
+        
+        utterance.onend = () => {
+          console.log('Speech synthesis completed');
+        };
+        
+        speechSynthesis.speak(utterance);
+      }, 100);
+    } else {
+      console.warn('Speech synthesis not available');
     }
   };
 

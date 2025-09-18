@@ -16,12 +16,8 @@ export const AccessibilityToolbar: React.FC = () => {
 
   const handleButtonClick = (action: () => void, message: string) => {
     action();
-    // Small delay to ensure the action completes before speaking
-    setTimeout(() => {
-      if (textToSpeech) {
-        speakText(message);
-      }
-    }, 100);
+    // Speak the message after the action
+    speakText(message);
   };
 
   return (
