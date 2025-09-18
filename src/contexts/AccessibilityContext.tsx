@@ -26,6 +26,7 @@ export const AccessibilityProvider: React.FC<{ children: React.ReactNode }> = ({
   const [highContrast, setHighContrast] = useState(false);
   const [textToSpeech, setTextToSpeech] = useState(false);
   const [speechSynthesis, setSpeechSynthesis] = useState<SpeechSynthesis | null>(null);
+  const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
 
   useEffect(() => {
     // Initialize speech synthesis
@@ -35,6 +36,7 @@ export const AccessibilityProvider: React.FC<{ children: React.ReactNode }> = ({
       // Load voices
       const loadVoices = () => {
         const voices = window.speechSynthesis.getVoices();
+        setVoices(voices);
         console.log('Available voices:', voices.length);
       };
       
@@ -83,6 +85,16 @@ export const AccessibilityProvider: React.FC<{ children: React.ReactNode }> = ({
       // Small delay to ensure cancellation completes
       setTimeout(() => {
         const utterance = new SpeechSynthesisUtterance(text);
+        
+        // Find and assign a suitable voice
+        let selectedVoice = voices.find(voice => voice.lang === 'en-US');
+        if (!selectedVoice && voices.length > 0) {
+          selectedVoice = voices[0]; // Fallback to first available voice
+        }
+        if (selectedVoice) {
+          utterance.voice = selectedVoice;
+        }
+        
         utterance.rate = 0.8;
         utterance.pitch = 1;
         utterance.volume = 1;
