@@ -1,0 +1,176 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* High contrast mode styles */
+.high-contrast {
+  background-color: #000000 !important;
+  color: #FFFFFF !important;
+}
+
+.high-contrast button {
+  background-color: #FFFFFF !important; 
+  color: #000000 !important;
+}
+
+/* Cards and boxes should have white background with black text */
+.high-contrast .bg-white,
+.high-contrast .card-interactive {
+  background-color: #FFFFFF !important;
+  color: #000000 !important;
+}
+
+/* Text inside cards should be black */
+.high-contrast .bg-white *,
+.high-contrast .card-interactive * {
+  color: #000000 !important;
+}
+
+/* Icons inside cards should be black */
+.high-contrast .bg-white svg,
+.high-contrast .card-interactive svg {
+  color: #000000 !important;
+  stroke: #000000 !important;
+}
+
+/* Other box backgrounds */
+.high-contrast .bg-gray-50,
+.high-contrast .bg-blue-50,
+.high-contrast .bg-red-50,
+.high-contrast .bg-orange-50,
+.high-contrast .bg-green-50 {
+  background-color: #FFFFFF !important;
+  color: #000000 !important;
+}
+
+/* Text inside colored boxes should be black */
+.high-contrast .bg-gray-50 *,
+.high-contrast .bg-blue-50 *,
+.high-contrast .bg-red-50 *,
+.high-contrast .bg-orange-50 *,
+.high-contrast .bg-green-50 * {
+  color: #000000 !important;
+}
+
+/* Icons inside colored boxes should be black */
+.high-contrast .bg-gray-50 svg,
+.high-contrast .bg-blue-50 svg,
+.high-contrast .bg-red-50 svg,
+.high-contrast .bg-orange-50 svg,
+.high-contrast .bg-green-50 svg {
+  color: #000000 !important;
+  stroke: #000000 !important;
+}
+
+/* Header and footer should have black background with white text */
+.high-contrast header,
+.high-contrast footer {
+  background-color: #000000 !important;
+  color: #FFFFFF !important;
+  border-color: #FFFFFF !important;
+}
+
+/* Header and footer text should be white */
+.high-contrast header *,
+.high-contrast footer * {
+  color: #FFFFFF !important;
+}
+
+/* Header and footer icons should be white */
+.high-contrast header svg,
+.high-contrast footer svg {
+  color: #FFFFFF !important;
+  stroke: #FFFFFF !important;
+}
+
+/* Main page background text should be white */
+.high-contrast .min-h-screen > * {
+  color: #FFFFFF !important;
+}
+
+/* But override for cards and boxes */
+.high-contrast .min-h-screen .bg-white,
+.high-contrast .min-h-screen .card-interactive {
+  background-color: #FFFFFF !important;
+  color: #000000 !important;
+}
+
+.high-contrast .bg-blue-500,
+.high-contrast .bg-blue-600 {
+  background-color: #FFFFFF !important;
+  color: #000000 !important;
+}
+
+/* Links should be white on main background */
+.high-contrast a,
+.high-contrast .text-blue-500,
+.high-contrast .text-blue-600, 
+.high-contrast .text-blue-700 {
+  color: #FFFFFF !important;
+}
+
+/* But links inside cards should be black */
+.high-contrast .bg-white a,
+.high-contrast .card-interactive a,
+.high-contrast .bg-white .text-blue-500,
+.high-contrast .card-interactive .text-blue-500 {
+  color: #000000 !important;
+}
+
+/* Borders */
+.high-contrast .border-gray-200,
+.high-contrast .border-blue-200, 
+.high-contrast .border-red-200,
+.high-contrast .border-orange-200,
+.high-contrast .border-green-200 {
+  border-color: #FFFFFF !important;
+}
+
+/* Card borders should be black */
+.high-contrast .bg-white,
+.high-contrast .card-interactive {
+  border-color: #000000 !important;
+}
+
+/* Default icons should be white */
+.high-contrast svg { 
+  color: #FFFFFF !important;
+  fill: none !important;
+  stroke: #FFFFFF !important;
+  stroke-width: 2 !important;
+}
+
+/* Force all Lucide icons to be visible in high contrast */
+.high-contrast [data-lucide] {
+  color: #FFFFFF !important;
+  fill: none !important;
+  stroke: #FFFFFF !important;
+  stroke-width: 2 !important;
+}
+
+/* Underlined links */
+.high-contrast .underline {
+  text-decoration-color: #FFFFFF !important;
+}
+
+/* Font size scaling */
+.text-base {
+  font-size: 1rem;
+}
+
+.text-lg {
+  font-size: 1.125rem;
+}
+
+.text-xl {
+  font-size: 1.25rem;
+}
+
+/* Scale all text elements when font size changes */
+html.text-lg * {
+  font-size: calc(1em * 1.125);
+}
+
+html.text-xl * {
+  font-size: calc(1em * 1.25);
+}
