@@ -1,5 +1,5 @@
 import React from 'react';
-import { Lightbulb, Shield, Phone } from 'lucide-react';
+import { Shield, Phone } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAccessibility } from '../contexts/AccessibilityContext';
 
@@ -32,20 +32,6 @@ export const HomePage: React.FC = () => {
 
       {/* Main Cards Section - 75% of screen height */}
       <div className="flex-[3] flex flex-col lg:flex-row gap-8 px-8 pb-8">
-        {/* Learn Card */}
-        <button
-          onClick={() => handleCardClick('/tutorials', 'Learn to Spot Scams')}
-          className="flex-1 bg-white border-4 border-gray-200 rounded-lg p-8 hover:border-blue-500 hover:shadow-lg transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-blue-300 group card-interactive learn-card"
-        >
-          <div className="flex flex-col items-center text-center space-y-6">
-            <Lightbulb className="h-24 w-24 text-blue-500 group-hover:scale-110 transition-transform duration-200 card-icon" />
-            <h2 className="text-3xl font-bold text-gray-800">Learn to Spot Scams</h2>
-            <p className="text-xl text-gray-600 leading-relaxed">
-              Simple guides to help you recognise online risks.
-            </p>
-          </div>
-        </button>
-
         {/* Protect Card */}
         <button
           onClick={() => handleCardClick('/prevention', 'Get Protected Now')}
