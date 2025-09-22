@@ -6,32 +6,14 @@ export const PreventionPage: React.FC = () => {
   const { speakText, highContrast } = useAccessibility();
 
   const handleInstallExtension = () => {
-    speakText('Opening installation instructions');
+    speakText('Opening installation guide');
 
-    // Create installation instructions modal/alert
-    const instructions = `
-To install the Safety Shield extension:
-
-FOR CHROME:
-1. Build for Chrome: npm run build:extension:chrome
-2. Open Chrome and go to chrome://extensions/
-3. Turn on "Developer mode" (top right toggle)
-4. Click "Load unpacked" and select the 'dist' folder
-
-FOR FIREFOX:
-1. Build for Firefox: npm run build:extension:firefox
-2. Open Firefox and go to about:debugging
-3. Click "This Firefox"
-4. Click "Load Temporary Add-on"
-5. Select the manifest.json file from the 'dist' folder
-
-The Safety Shield icon will appear in your browser toolbar and protect you on websites and help analyze Gmail emails!
-    `.trim();
-
-    alert(instructions);
+    // Open the Google Drive link with installation files
+    const driveUrl = 'https://drive.google.com/drive/folders/1ivUf8CFQT-RVb_Oe78HfM2xV2IG7wSZ4?usp=drive_link';
+    window.open(driveUrl, '_blank');
 
     // Also log to console for developers
-    console.log('Extension installation instructions:', instructions);
+    console.log('Opening Guardian installation guide:', driveUrl);
   };
 
   return (
