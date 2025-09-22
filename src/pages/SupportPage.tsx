@@ -638,6 +638,24 @@ export const SupportPage: React.FC = () => {
     return questions[currentStep];
   };
 
+  const handleActionClick = (rec: any) => {
+    speakText(rec.action);
+
+    // If there's a website, open it
+    if (rec.website) {
+      const url = rec.website.startsWith('http') ? rec.website : `https://${rec.website}`;
+      window.open(url, '_blank', 'noopener,noreferrer');
+    }
+    // If there's a phone number, try to call it
+    else if (rec.phone) {
+      window.location.href = `tel:${rec.phone.replace(/\s/g, '')}`;
+    }
+    // If there's an email, open email client
+    else if (rec.email) {
+      window.location.href = `mailto:${rec.email}`;
+    }
+  };
+
   return (
     <div className="max-w-6xl mx-auto px-6 py-8">
       {/* Page Title */}
@@ -789,43 +807,48 @@ export const SupportPage: React.FC = () => {
                       {rec.phone && (
                         <div className="flex items-center gap-1">
                           <Phone className="h-4 w-4 text-gray-500 flex-shrink-0" />
-                          <span
-                            className="font-semibold text-gray-800 cursor-pointer truncate"
-                            onClick={() => speakText(`Phone: ${rec.phone}`)}
+                          <a
+                            href={`tel:${rec.phone.replace(/\s/g, '')}`}
+                            className="font-semibold text-blue-600 hover:text-blue-800 cursor-pointer truncate underline"
+                            onClick={() => speakText(`Calling ${rec.phone}`)}
                           >
                             {rec.phone}
-                          </span>
+                          </a>
                         </div>
                       )}
 
                       {rec.website && (
                         <div className="flex items-center gap-1">
                           <ExternalLink className="h-4 w-4 text-gray-500 flex-shrink-0" />
-                          <span
-                            className="text-blue-600 cursor-pointer hover:text-blue-800 truncate"
-                            onClick={() => speakText(`Website: ${rec.website}`)}
+                          <a
+                            href={rec.website.startsWith('http') ? rec.website : `https://${rec.website}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-blue-600 cursor-pointer hover:text-blue-800 truncate underline"
+                            onClick={() => speakText(`Opening website ${rec.website}`)}
                           >
                             {rec.website}
-                          </span>
+                          </a>
                         </div>
                       )}
 
                       {rec.email && (
                         <div className="flex items-center gap-1">
                           <FileText className="h-4 w-4 text-gray-500 flex-shrink-0" />
-                          <span
-                            className="text-gray-700 cursor-pointer truncate"
-                            onClick={() => speakText(`Email: ${rec.email}`)}
+                          <a
+                            href={`mailto:${rec.email}`}
+                            className="text-blue-600 hover:text-blue-800 cursor-pointer truncate underline"
+                            onClick={() => speakText(`Sending email to ${rec.email}`)}
                           >
                             {rec.email}
-                          </span>
+                          </a>
                         </div>
                       )}
                     </div>
 
                     <button
                       className={`w-full px-4 py-2 bg-${rec.color}-500 hover:bg-${rec.color}-600 text-white font-semibold rounded-lg transition-colors duration-200 flex items-center justify-center gap-2 focus:outline-none focus:ring-2 focus:ring-${rec.color}-500 text-sm`}
-                      onClick={() => speakText(rec.action)}
+                      onClick={() => handleActionClick(rec)}
                     >
                       {rec.action}
                       <ArrowRight className="h-4 w-4" />
@@ -903,15 +926,25 @@ export const SupportPage: React.FC = () => {
                               <div className="text-xs text-gray-600 space-y-1">
                                 <div className="flex items-center gap-1">
                                   <Phone className="h-3 w-3" />
-                                  <span onClick={() => speakText(`Phone: ${resource.phone}`)} className="cursor-pointer">
+                                  <a
+                                    href={`tel:${resource.phone.replace(/\s/g, '')}`}
+                                    onClick={() => speakText(`Calling ${resource.phone}`)}
+                                    className="cursor-pointer text-blue-600 hover:text-blue-800 underline"
+                                  >
                                     {resource.phone}
-                                  </span>
+                                  </a>
                                 </div>
                                 <div className="flex items-center gap-1">
                                   <ExternalLink className="h-3 w-3" />
-                                  <span onClick={() => speakText(`Website: ${resource.website}`)} className="cursor-pointer text-blue-600 truncate">
+                                  <a
+                                    href={resource.website.startsWith('http') ? resource.website : `https://${resource.website}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    onClick={() => speakText(`Opening website ${resource.website}`)}
+                                    className="cursor-pointer text-blue-600 hover:text-blue-800 truncate underline"
+                                  >
                                     {resource.website}
-                                  </span>
+                                  </a>
                                 </div>
                               </div>
                             </div>
@@ -969,9 +1002,13 @@ export const SupportPage: React.FC = () => {
                         <h4 className="font-bold text-sm mb-1" onClick={() => speakText(contact.name)}>
                           {contact.name}
                         </h4>
-                        <p className="text-xs font-semibold" onClick={() => speakText(contact.phone)}>
+                        <a
+                          href={`tel:${contact.phone.replace(/\s/g, '')}`}
+                          className="text-xs font-semibold hover:underline"
+                          onClick={() => speakText(`Calling ${contact.phone}`)}
+                        >
                           {contact.phone}
-                        </p>
+                        </a>
                       </div>
                     ))}
                   </div>

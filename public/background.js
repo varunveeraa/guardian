@@ -62,6 +62,42 @@ class SafetyShieldBackground {
             return;
         }
 
+        // Check if this is a whitelisted Guardian domain
+        if (this.isGuardianDomain(tab.url)) {
+            const safetyLevel = 'safe';
+            const apiResponse = {
+                url: tab.url,
+                risk: 0,
+                risk_blended: 0,
+                official: true,
+                reasons: ['Guardian Safety Shield - Official Website']
+            };
+
+            // Update extension icon based on safety level
+            this.updateIcon(safetyLevel, tab.id);
+
+            // Store safety information for popup and content script
+            this.storeSafetyInfo(tab.id, {
+                url: tab.url,
+                safetyLevel: safetyLevel,
+                apiResponse: apiResponse,
+                timestamp: Date.now(),
+                whitelisted: true
+            });
+
+            // Send safety info to content script for overlay
+            chrome.tabs.sendMessage(tab.id, {
+                action: 'updateSafetyStatus',
+                safetyLevel: safetyLevel,
+                apiResponse: apiResponse
+            }).catch(error => {
+                // Content script might not be ready yet, that's okay
+                console.log('Content script not ready for safety update:', error.message);
+            });
+
+            return;
+        }
+
         try {
             // Call the API to check website safety
             const apiResponse = await this.callSafetyAPI(tab.url);
@@ -158,6 +194,26 @@ class SafetyShieldBackground {
         }
     }
     
+    isGuardianDomain(url) {
+        try {
+            const urlObj = new URL(url);
+            const hostname = urlObj.hostname.toLowerCase();
+
+            // Guardian website domains to whitelist
+            const guardianDomains = [
+                'guardianext.netlify.app'
+            ];
+
+            // Check if the hostname matches any Guardian domain or is a subdomain
+            return guardianDomains.some(domain =>
+                hostname === domain || hostname.endsWith('.' + domain)
+            );
+        } catch (error) {
+            console.error('Error checking Guardian domain:', error);
+            return false;
+        }
+    }
+
     isKnownSafeSite(hostname) {
         // List of known safe sites (for demonstration)
         const safeSites = [
@@ -172,8 +228,8 @@ class SafetyShieldBackground {
             'wikipedia.org',
             'github.com'
         ];
-        
-        return safeSites.some(site => 
+
+        return safeSites.some(site =>
             hostname === site || hostname.endsWith('.' + site)
         );
     }
